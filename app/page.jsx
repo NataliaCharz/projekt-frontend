@@ -15,7 +15,7 @@ export default function HomePage() {
                     <Link href="/register">
                         <button>Register</button>
                     </Link>
-                    <Link href="/guest">
+                    <Link href="/library">
                         <button>Use as Guest</button>
                     </Link>
                 </div>

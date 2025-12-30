@@ -43,11 +43,16 @@ export default function LibraryPage() {
             <button onClick={searchBooks}>Search</button>
 
             {loading ? <p>Loading...</p> : (
-                <ul>
+                <div id="library-div">
                     {books.map((book, index) => (
-                        <li key={index}>{book.title} by {book.author_name ? book.author_name.join(", ") : "Unknown Author"}</li>
+                        <div className="library-card" key={index}>
+                            <h3>{book.title}</h3>
+                            <p>
+                                By {book.author_name ? book.author_name.join(", ") : "Unknown Author"}
+                            </p>
+                        </div>
                     ))}
-                </ul>
+                </div>
             )}
 
         </div>

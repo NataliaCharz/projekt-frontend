@@ -1,14 +1,11 @@
 import "./globals.css";
-import { AuthProvider } from "./auth/AuthContext";
-import {BrowserRouter} from "react-router-dom";
+import {AuthProvider} from "./auth/AuthContext";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({children}) {
     return (
         <html lang="en">
         <body>
-        <BrowserRouter>
-            <AuthProvider>{children}</AuthProvider>
-        </BrowserRouter>
+        <AuthProvider>{children}</AuthProvider>
         </body>
         </html>
     );

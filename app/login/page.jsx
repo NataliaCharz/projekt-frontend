@@ -2,12 +2,13 @@
 
 import {useState} from "react";
 import api from "../api/axios";
-import {useNavigate} from "react-router-dom";
+import {useRouter} from "next/navigation";
+
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,23 +24,23 @@ export default function LoginPage() {
 
     const handleGuest = async () => {
         try {
-            navigate("/library")
+            router.push("/library")
         } catch (err) {
             alert("Error during logging as guest");
         }
     };
 
     const handleRegister = async () => {
-        navigate("/register");
+        router.push("/register");
     }
 
     const redirectByRole = (roles) => {
         if (roles.includes("ADMIN")) {
-            navigate("/admin");
+            router.push("/admin");
         } else if (roles.includes("USER")) {
-            navigate("/user");
+            router.push("/user/home");
         } else {
-            navigate("/");
+            router.push("/");
         }
     };
 
@@ -50,12 +51,14 @@ export default function LoginPage() {
                     type="text"
                     placeholder="Username"
                     value={username}
+                    onClick={() => setUsername("")}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
                     type="password"
                     placeholder="Password"
                     value={password}
+                    onClick={() => setPassword("")}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <button type="submit">Log in</button>

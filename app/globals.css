@@ -20,7 +20,100 @@
 }
 
 body {
-  background: var(--background);
+  background: saddlebrown;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Courier, sans-serif;
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+button {
+  background: darkolivegreen;
+  color: yellowgreen;
+  border: none;
+  padding: 12px 26px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(15, 61, 46, 0.4);
+  transition: all 0.25s ease;
+}
+
+input {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  color: #3e2f1c;
+  background-color: #f5f0e6;
+  border: 2px solid #c2b497;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  font-family: 'Georgia', serif;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #8b6d4d;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.input::placeholder {
+  color: #d8d1c0;
+  font-style: italic;
+}
+
+#library-div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, max(200px));
+  gap: 10px;
+  margin: 10px;
+}
+
+.library-card {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: darkslategrey;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.library-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+#user-div {
+  background-color: sandybrown;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 220px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+#user-div a {
+  text-decoration: none;
+  color: white;
+  background-color: olive;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-align: center;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+#user-div a:hover {
+  background-color: darkolivegreen;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
