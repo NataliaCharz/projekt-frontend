@@ -1,9 +1,7 @@
 import Link from "next/link";
-import {AuthProvider} from "./auth/AuthContext";
 
 export default function HomePage() {
     return (
-        <AuthProvider>
             <main>
                 <h1>Library Application</h1>
                 <p>Welcome on a page where You can store Your favorite books and get back any time any anywhere You want.</p>
@@ -20,7 +18,6 @@ export default function HomePage() {
                     </Link>
                 </div>
             </main>
-        </AuthProvider>
     );
 }
 

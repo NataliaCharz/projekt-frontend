@@ -21,6 +21,7 @@ export default function RegisterPage() {
 
         try {
             await api.post("/auth/register", { username, password });
+            localStorage.setItem("token", res.data.token);
             router.push("/login");
         } catch (err) {
             console.error(err);

@@ -1,15 +1,18 @@
 import Link from "next/link";
+import RequireAuth from "../../auth/RequireAuth";
 
-export default function UserPanel(){
+export default function UserPanel() {
     return (
-        <div id="user-div">
-            <Link href="/user/home">Home</Link>
-            <Link href="/user/list">Your List</Link>
-            <Link href="/user/wishlist">Wishlist</Link>
-            <Link href="/user/authors">Explore Authors</Link>
-            <Link href="/user/books">Explore Books</Link>
-            <Link href="/user/contact">Contact</Link>
-            <Link href="/user/logout">Logout</Link>
-        </div>
-        )
+        <RequireAuth allowedRoles={["USER"]}>
+            <div className="panel">
+                <Link href="/user/home" className="panel-link">Home</Link>
+                <Link href="/user/list" className="panel-link">Your List</Link>
+                <Link href="/user/wishlist" className="panel-link">Wishlist</Link>
+                <Link href="../../authors" className="panel-link">Explore Authors</Link>
+                <Link href="/books" className="panel-link">Explore Books</Link>
+                <Link href="/contact" className="panel-link">Contact</Link>
+                <Link href="../../logout" className="panel-link">Logout</Link>
+            </div>
+        </RequireAuth>
+    )
 }

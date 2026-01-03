@@ -1,16 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import api from "../api/axios";
+import { useAuth } from "../auth/AuthContext";
 
 export default function LogoutPage() {
-    const router = useRouter();
+    const { logout } = useAuth();
 
     useEffect(() => {
-        api.post("/auth/logout")
-            .finally(() => router.push("/login"));
-    }, []);
+        logout();
+    }, [logout]);
 
-    return <div>Logged out...</div>;
+    return <div>Logging out...</div>;
 }
+

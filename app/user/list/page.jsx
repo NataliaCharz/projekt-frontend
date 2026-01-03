@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import api from "../../api/axios";
 import BookCard from "../../components/BookCard";
 
-export default function BookList() {
+export default function UserBookList() {
     const [books, setBooks] = useState([]);
     const router = useRouter();
 
@@ -21,7 +21,7 @@ export default function BookList() {
     }, []);
 
     const handleClick = (bookId) => {
-        router.push(`/user/list/${bookId}`);
+        router.push(`/books/${bookId}?fromUser=true`);
     };
 
     return (

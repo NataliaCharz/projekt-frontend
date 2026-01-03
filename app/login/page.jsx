@@ -15,8 +15,9 @@ export default function LoginPage() {
         try {
             const res = await api.post("/auth/login", {username, password});
             const user = res.data;
+            localStorage.setItem("token", user.token);
             console.log(res);
-            redirectByRole(user.roles);
+            redirectByRole(user.role);
         } catch (err) {
             alert("Error during logging in.");
         }
@@ -34,10 +35,10 @@ export default function LoginPage() {
         router.push("/register");
     }
 
-    const redirectByRole = (roles) => {
-        if (roles.includes("ADMIN")) {
-            router.push("/admin");
-        } else if (roles.includes("USER")) {
+    const redirectByRole = (role) => {
+        if (role === "ADMIN") {
+            router.push("/admin/home");
+        } else if (role === "USER") {
             router.push("/user/home");
         } else {
             router.push("/");
@@ -68,9 +69,3 @@ export default function LoginPage() {
         </div>
     );
 }
-
-
-
-
-
-

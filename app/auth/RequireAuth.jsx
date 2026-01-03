@@ -1,26 +1,30 @@
 "use client";
 
-import { useAuth } from "./authContext";
+import { useAuth } from "./AuthContext";
 import { useEffect } from "react";
-import {useNavigate} from "react-router-dom";
+import { useRouter } from "next/navigation";
 
-const RequireAuth = ({ children, roles }) => {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
+const RequireAuth = ({ children, allowedRoles }) => {
+    const { user, loading } = useAuth();
+    const router = useRouter();
 
-  useEffect(() => {
-    if (!loading) {
-      if (!roles.includes(user.role)) {
-        navigate("/login");
-      }
+    useEffect(() => {
+        if (!loading) {
+            if (!user || (allowedRoles && !allowedRoles.includes(user.role))) {
+                router.replace("/login");
+            }
+        }
+    }, [user, loading, allowedRoles, router]);
+
+    if (loading || !user || (allowedRoles && !allowedRoles.includes(user.role))) {
+        return <div>Loading...</div>;
     }
-  }, [user, loading, roles, navigate]);
 
-  if (loading) return <div>Loading...</div>;
-
-  return children;
+    return children;
 };
 
 export default RequireAuth;
+
+
 
 

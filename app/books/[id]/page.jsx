@@ -1,13 +1,15 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import api from "../../../api/axios";
+import {useParams, useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
+import api from "../../api/axios";
+import AuthorCard from "../../components/AuthorCard";
 
 export default function BookDetail() {
     const { id } = useParams();
     const [book, setBook] = useState(null);
     const [author, setAuthor] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchBook = async () => {
@@ -39,17 +41,25 @@ export default function BookDetail() {
 
     if (!book) return <p>Loading...</p>;
 
+    const handleClick = (authorId) => {
+        router.push(`/authors/${authorId}`);
+    };
+
     return (
         <div>
             <h1>{book.title}</h1>
             <p>Pages: {book.pages}</p>
             <p>Category: {book.category}</p>
-            <p>
-                Author: {author.length > 0
-                ? author.map(a => `${a.name} ${a.surname}`).join(", ")
-                : "Loading author..."}
-            </p>
-
+            <div>
+                Author: {author.length > 0 ? author.map((a) => (
+                    <AuthorCard
+                        key={a.id}
+                        name={a.name}
+                        surname={a.surname}
+                        onClick={() => handleClick(a.id)}
+                    />
+                )) : "Book with no Author"}
+            </div>
         </div>
     );
 }
