@@ -1,7 +1,8 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import api from "../../api/axios";
+import toast from "react-hot-toast";
 
 export default function AddAuthorForm() {
     const [name, setName] = useState("");
@@ -10,7 +11,7 @@ export default function AddAuthorForm() {
     const [dateOfBirth, setDateOfBirth] = useState("");
     const [alive, setAlive] = useState(true);
     const [age, setAge] = useState(null);
-    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (dateOfBirth) {
@@ -25,7 +26,6 @@ export default function AddAuthorForm() {
         } else {
             setAge(null);
         }
-// eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dateOfBirth]);
 
 
@@ -42,68 +42,94 @@ export default function AddAuthorForm() {
         };
 
         try {
-            const res = await api.post("/authors/add", authorDTO, {
+            setLoading(true);
+            await api.post("/authors/add", authorDTO, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-
-            if (res.status === 200) {
-                setMessage("Author added successfully!");
-                setName("");
-                setSurname("");
-                setSex("MALE");
-                setDateOfBirth("");
-                setAlive(true);
-                setAge(null);
-            }
-        } catch (error) {
-            console.error(error);
-            if (error.response) {
-                setMessage("Error: " + (error.response.data?.message || error.response.statusText));
-            } else {
-                setMessage("Network error: " + error.message);
-            }
+            toast.success("Author added successfully!")
+            setName("");
+            setSurname("");
+            setSex("MALE");
+            setDateOfBirth("");
+            setAlive(true);
+            setAge(null);
+        } catch {
+            toast.error("Error during adding Author!")
+        } finally {
+            setLoading(false);
         }
     };
 
+    if (loading) {
+        return (
+            <div className="spinner-container">
+                <div className="spinner"></div>
+            </div>
+        );
+    }
+
     return (
-        <div>
+        <div className="author-form-page">
+            {loading && (
+                <div className="spinner-container">
+                    <div className="spinner"></div>
+                </div>
+            )}
             <h2>Add New Author</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Name:
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required/>
-                </label>
+            <form className="author-form" onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label>Name:</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                </div>
 
-                <label>
-                    Surname:
-                    <input type="text" value={surname} onChange={(e) => setSurname(e.target.value)} required/>
-                </label>
+                <div className="form-group">
+                    <label>Surname:</label>
+                    <input
+                        type="text"
+                        value={surname}
+                        onChange={(e) => setSurname(e.target.value)}
+                        required
+                    />
+                </div>
 
-                <label>
-                    Sex:
+                <div className="form-group">
+                    <label>Sex:</label>
                     <select value={sex} onChange={(e) => setSex(e.target.value)}>
                         <option value="MALE">Male</option>
                         <option value="FEMALE">Female</option>
                     </select>
-                </label>
+                </div>
 
-                <label>
-                    Date of Birth:
-                    <input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required/>
-                </label>
+                <div className="form-group">
+                    <label>Date of Birth:</label>
+                    <input
+                        type="date"
+                        value={dateOfBirth}
+                        onChange={(e) => setDateOfBirth(e.target.value)}
+                        required
+                    />
+                </div>
 
-                <label>
-                    Alive:
-                    <input type="checkbox" checked={alive} onChange={(e) => setAlive(e.target.checked)}/>
-                </label>
-
-                {age !== null && <p>Calculated Age: {age}</p>}
-
-                <button type="submit" style={{marginTop: "10px"}}>Add Author</button>
+                <div className="form-group checkbox-group">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={alive}
+                            onChange={(e) => setAlive(e.target.checked)}
+                        />
+                        Alive
+                    </label>
+                </div>
+                {age !== null && <p className="age-info">Calculated Age: {age}</p>}
+                <button type="submit">Add Author</button>
             </form>
-            {message && <p>{message}</p>}
         </div>
     );
 }

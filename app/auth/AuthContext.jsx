@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import api from "../api/axios";
 import {useRouter} from "next/navigation";
+import toast from "react-hot-toast";
 
 const AuthContext = createContext();
 
@@ -22,8 +23,7 @@ export const AuthProvider = ({ children }) => {
             setUser(res.data);
         } catch (err) {
             console.log("Invalid token or no user", err);
-            // localStorage.removeItem("token");
-            // setUser(null);
+            toast.error("You are not logged in.")
         } finally {
             setLoading(false);
         }
@@ -37,15 +37,13 @@ export const AuthProvider = ({ children }) => {
         try {
             const res = await api.post("/auth/login", credentials);
             const userData = { username: res.data.username, role: res.data.role };
-
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("role", res.data.role);
             setUser(userData);
-
             if (res.data.role === "ADMIN") {
-                router.push("/admin/home");
+                router.push("/admin");
             } else if (res.data.role === "USER"){
-                router.push("/user/home");
+                router.push("/user");
             } else {
                 router.push("/");
             }
@@ -64,9 +62,9 @@ export const AuthProvider = ({ children }) => {
             setUser({ username: res.data.username, role: res.data.role });
 
             if (res.data.role === "ADMIN") {
-                router.push("/admin/home");
+                router.push("/admin");
             } else {
-                router.push("/user/home");
+                router.push("/user");
             }
         } catch (err) {
             console.error("Register failed", err);
@@ -77,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem("token");
         setUser(null);
-        router.push("/login");
+        router.push("/");
     };
 
     return (

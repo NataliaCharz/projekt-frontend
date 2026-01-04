@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -12,15 +13,16 @@ export default function LoginPage() {
         e.preventDefault();
         try {
             await login({ username, password });
+            toast.success("Logged in.")
         } catch {
-            alert("Error during logging in.");
+            toast.error("Error during logging in.");
         }
     };
 
     return (
         <form onSubmit={handleLogin}>
-            <input value={username} onChange={e => setUsername(e.target.value)} />
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+            <input value={username} placeholder={"Username"} onChange={e => setUsername(e.target.value)} />
+            <input type="password" placeholder={"Password"} value={password} onChange={e => setPassword(e.target.value)} />
             <button type="submit">Log in</button>
         </form>
     );

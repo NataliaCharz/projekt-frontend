@@ -2,33 +2,32 @@
 
 import { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
     const { register } = useAuth();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("");
 
     const handleRegister = async (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            toast.error("Passwords do not match");
             return;
         }
 
         try {
             await register({ username, password });
-        } catch (err) {
-            setError(err.response?.data?.message || "Registration failed");
+        } catch {
+            toast.error("Registration failed");
         }
     };
 
     return (
         <div>
             <h2>Register</h2>
-
             <form onSubmit={handleRegister}>
                 <input
                     value={username}
@@ -52,8 +51,6 @@ export default function RegisterPage() {
                 />
                 <button type="submit">Register</button>
             </form>
-
-            {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
     );
 }

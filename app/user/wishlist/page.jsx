@@ -5,7 +5,7 @@ import api from "../../api/axios";
 import BookCard from "../../components/BookCard";
 import toast from "react-hot-toast";
 
-export default function UserBookList() {
+export default function UserWishlist() {
     const [books, setBooks] = useState([]);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -14,9 +14,10 @@ export default function UserBookList() {
         const fetchBooks = async () => {
             try {
                 setLoading(true);
-                const res = await api.get("/user/books");
+                const res = await api.get("/user/books/wishlist");
                 setBooks(res.data);
             } catch (err) {
+                toast.error("Error during fetching")
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -29,16 +30,16 @@ export default function UserBookList() {
         router.push(`/books/${bookId}?fromUser=true`);
     };
 
-    const handleRemoveFromList = async (bookId) => {
+    const handleRemoveFromWishlist = async (bookId) => {
         try {
-            await api.delete(`/user/books/delete/${bookId}`);
+            await api.delete(`/user/books/wishlist/delete/${bookId}`)
             setBooks(prev => prev.filter(b => b.id !== bookId));
-            toast.success("Book removed from your list!");
+            alert("Book removed from your list!");
         } catch (err) {
             console.error(err);
-            toast.error("Could not remove book from your list");
+            alert("Could not remove book from your list");
         }
-    };
+    }
 
     if (loading) {
         return (
@@ -56,8 +57,8 @@ export default function UserBookList() {
                     title={b.title}
                     onClick={() => handleClick(b.id)}
                     role="USER"
-                    showRemoveFromList={true}
-                    onRemoveFromList={() => handleRemoveFromList(b.id)}
+                    showRemoveFromWishlist={true}
+                    onRemoveFromWishlist={() => handleRemoveFromWishlist(b.id)}
                 />
             ))}
         </div>
