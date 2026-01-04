@@ -1,3 +1,5 @@
+'use client';
+
 import RequireAuth from "../../auth/RequireAuth";
 import Link from "next/link";
 

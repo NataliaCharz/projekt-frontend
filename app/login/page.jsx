@@ -16,6 +16,7 @@ export default function LoginPage() {
             const res = await api.post("/auth/login", {username, password});
             const user = res.data;
             localStorage.setItem("token", user.token);
+            localStorage.setItem("role", user.role);
             console.log(res);
             redirectByRole(user.role);
         } catch (err) {

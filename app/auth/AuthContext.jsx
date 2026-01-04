@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
             return;
         }
-
         try {
             const res = await api.get("/auth/me");
             setUser(res.data);
@@ -37,13 +36,18 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             const res = await api.post("/auth/login", credentials);
+            const userData = { username: res.data.username, role: res.data.role };
+
             localStorage.setItem("token", res.data.token);
-            setUser({ username: res.data.username, role: res.data.role });
-            console.log("kaka")
+            localStorage.setItem("role", res.data.role);
+            setUser(userData);
+
             if (res.data.role === "ADMIN") {
                 router.push("/admin/home");
-            } else {
+            } else if (res.data.role === "USER"){
                 router.push("/user/home");
+            } else {
+                router.push("/");
             }
         } catch (err) {
             console.error("Login failed", err);
@@ -51,14 +55,19 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+
     const register = async (credentials) => {
         try {
             const res = await api.post("/auth/register", credentials);
             localStorage.setItem("token", res.data.token);
+            localStorage.setItem("role", res.data.role);
             setUser({ username: res.data.username, role: res.data.role });
 
-            if (res.data.role === "ADMIN") window.location.href = "/admin/home";
-            else window.location.href = "/user/panel";
+            if (res.data.role === "ADMIN") {
+                router.push("/admin/home");
+            } else {
+                router.push("/user/home");
+            }
         } catch (err) {
             console.error("Register failed", err);
             throw err;
