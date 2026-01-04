@@ -22,8 +22,8 @@ export const AuthProvider = ({ children }) => {
             setUser(res.data);
         } catch (err) {
             console.log("Invalid token or no user", err);
-            localStorage.removeItem("token");
-            setUser(null);
+            // localStorage.removeItem("token");
+            // setUser(null);
         } finally {
             setLoading(false);
         }
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem("token");
         setUser(null);
-        window.location.href = "/login";
+        router.push("/login");
     };
 
     return (

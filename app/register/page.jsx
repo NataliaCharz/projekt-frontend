@@ -1,11 +1,10 @@
 "use client";
 
-import {useState} from "react";
-import api from "../api/axios";
-import {useRouter} from "next/navigation";
+import { useState } from "react";
+import { useAuth } from "../auth/AuthContext";
 
 export default function RegisterPage() {
-    const router = useRouter();
+    const { register } = useAuth();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,11 +19,8 @@ export default function RegisterPage() {
         }
 
         try {
-            await api.post("/auth/register", { username, password });
-            localStorage.setItem("token", res.data.token);
-            router.push("/login");
+            await register({ username, password });
         } catch (err) {
-            console.error(err);
             setError(err.response?.data?.message || "Registration failed");
         }
     };
