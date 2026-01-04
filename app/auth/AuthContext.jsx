@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("role", res.data.role);
             setUser({ username: res.data.username, role: res.data.role });
-
+            toast.success("Registered.")
             if (res.data.role === "ADMIN") {
                 router.push("/admin");
             } else {

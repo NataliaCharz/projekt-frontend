@@ -11,7 +11,7 @@ export default function AdminMessagesPage() {
         const fetchMessages = async () => {
             try {
                 setLoading(true);
-                const res = await api.get("/admin/contact");
+                const res = await api.get("/contact");
                 setMessages(res.data);
             } catch {
                 toast.error("Failed to fetch messages");
@@ -24,7 +24,7 @@ export default function AdminMessagesPage() {
 
     const handleDeleteMessage = async (id) => {
         try {
-            await api.delete(`/admin/contact/delete/${id}`);
+            await api.delete(`/contact/delete/${id}`);
             setMessages(prev => prev.filter(msg => msg.id !== id));
             toast.success("Message deleted successfully!");
         } catch {

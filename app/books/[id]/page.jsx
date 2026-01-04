@@ -5,8 +5,10 @@ import {useEffect, useState} from "react";
 import api from "../../api/axios";
 import AuthorCard from "../../components/AuthorCard";
 import toast from "react-hot-toast";
+import {useAuth} from "../../auth/AuthContext";
 
 export default function BookDetail() {
+    const {user} = useAuth();
     const {id} = useParams();
     const [book, setBook] = useState(null);
     const [author, setAuthor] = useState([]);
@@ -49,25 +51,28 @@ export default function BookDetail() {
         fetchAuthor();
     }, [book]);
 
-    useEffect(() => {
-        const checkBookStatus = async () => {
-            try {
-                setLoading(true);
-                const listRes = await api.get("/user/books");
-                const wishlistRes = await api.get("/user/books/wishlist");
-                setInList(listRes.data.some(b => b.id === book?.id));
-                setInWishlist(wishlistRes.data.some(b => b.id === book?.id));
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
+    if (user.role === "USER") {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+            const checkBookStatus = async () => {
+                try {
+                    setLoading(true);
+                    const listRes = await api.get("/user/books");
+                    const wishlistRes = await api.get("/user/books/wishlist");
+                    setInList(listRes.data.some(b => b.id === book?.id));
+                    setInWishlist(wishlistRes.data.some(b => b.id === book?.id));
+                } catch (err) {
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
 
-        if (book) {
-            checkBookStatus();
-        }
-    }, [book]);
+            if (book) {
+                checkBookStatus();
+            }
+        }, [book]);
+    }
 
     const handleAddToList = async () => {
         try {
@@ -140,11 +145,11 @@ export default function BookDetail() {
                     <p>Book with no Author</p>
                 )}
             </section>
-
+            {user.role === "USER" && (
             <section className="book-actions">
                 {!inList && <button onClick={handleAddToList}>Add to Your List</button>}
                 {!inWishlist && <button onClick={handleAddToWishlist}>Add to Wishlist</button>}
-            </section>
+            </section>)}
         </div>
 
     );

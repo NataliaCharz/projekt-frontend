@@ -16,7 +16,7 @@ export default function ContactPage() {
         e.preventDefault();
         setLoading(true);
         try {
-            await api.post("/admin/contact/send", form);
+            await api.post("/contact/send", form);
             toast.success("Thank you for your message!");
             setForm({ name: "", email: "", message: "" });
         } catch {

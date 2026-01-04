@@ -34,10 +34,10 @@ export default function UserWishlist() {
         try {
             await api.delete(`/user/books/wishlist/delete/${bookId}`)
             setBooks(prev => prev.filter(b => b.id !== bookId));
-            alert("Book removed from your list!");
+            toast.success("Book removed from your list!");
         } catch (err) {
             console.error(err);
-            alert("Could not remove book from your list");
+            toast.error("Could not remove book from your list");
         }
     }
 

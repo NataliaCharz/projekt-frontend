@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import api from "../api/axios"
 import toast from "react-hot-toast";
@@ -8,12 +8,16 @@ export default function BookCard({ bookId, title, role, onClick,
                                      showRemoveFromList, showRemoveFromWishlist,
                                      onRemoveFromList, onRemoveFromWishlist }) {
     const router = useRouter();
+    const [inList, setInList] = useState(false);
+    const [inWishlist, setInWishlist] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleAddToList = async () => {
         try {
             await api.post(`/user/books/add/${bookId}`);
+            setInList(true);
             toast.success("Book added to your list!");
-        } catch (err) {
+        } catch {
             toast.error("Could not add book to your list");
         }
     };
@@ -21,10 +25,33 @@ export default function BookCard({ bookId, title, role, onClick,
     const handleAddToWishlist = async () => {
         try {
             await api.post(`/user/books/wishlist/add/${bookId}`);
+            setInWishlist(true);
             toast.success("Book added to your wishlist!");
         } catch {
             toast.error("Could not add book to your list");
         }
+    }
+
+    if (role === "USER") {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+            const checkBookStatus = async () => {
+                try {
+                    setLoading(true);
+                    const listRes = await api.get("/user/books");
+                    const wishlistRes = await api.get("/user/books/wishlist");
+                    setInList(listRes.data.some(b => b.id === bookId));
+                    setInWishlist(wishlistRes.data.some(b => b.id === bookId));
+                } catch (err) {
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            if (bookId) {
+                checkBookStatus();
+            }
+        }, [bookId]);
     }
 
     const handleRemoveFromList = async () => {
@@ -54,8 +81,8 @@ export default function BookCard({ bookId, title, role, onClick,
             )}
             {role === "USER" && (
                 <div className="book-actions">
-                    {showAddToList && <button onClick={handleAddToList}>Add to Your List</button>}
-                    {showAddToWishlist && <button onClick={handleAddToWishlist}>Add to Wishlist</button>}
+                    {showAddToList && !inList && <button onClick={handleAddToList}>Add to Your List</button>}
+                    {showAddToWishlist && !inWishlist && <button onClick={handleAddToWishlist}>Add to Wishlist</button>}
                     {showRemoveFromList && <button onClick={handleRemoveFromList}>Remove from List</button>}
                     {showRemoveFromWishlist && <button onClick={handleRemoveFromWishlist}>Remove from Wishlist</button>}
                 </div>

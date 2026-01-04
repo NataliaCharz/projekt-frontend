@@ -31,14 +31,6 @@ export function useLibrary() {
         }
     };
 
-    if (loading) {
-        return (
-            <div className="spinner-container">
-                <div className="spinner"></div>
-            </div>
-        );
-    }
-
     return {
         surname,
         books,
