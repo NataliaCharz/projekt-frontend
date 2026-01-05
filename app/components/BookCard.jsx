@@ -3,10 +3,12 @@ import {useRouter} from "next/navigation";
 import api from "../api/axios"
 import toast from "react-hot-toast";
 
-export default function BookCard({ bookId, title, role, onClick,
+export default function BookCard({
+                                     bookId, title, role, onClick,
                                      showAddToList, showAddToWishlist,
                                      showRemoveFromList, showRemoveFromWishlist,
-                                     onRemoveFromList, onRemoveFromWishlist }) {
+                                     onRemoveFromList, onRemoveFromWishlist
+                                 }) {
     const router = useRouter();
     const [inList, setInList] = useState(false);
     const [inWishlist, setInWishlist] = useState(false);
@@ -32,9 +34,8 @@ export default function BookCard({ bookId, title, role, onClick,
         }
     }
 
-    if (role === "USER") {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useEffect(() => {
+    useEffect(() => {
+        if (role === "USER") {
             const checkBookStatus = async () => {
                 try {
                     setLoading(true);
@@ -51,8 +52,9 @@ export default function BookCard({ bookId, title, role, onClick,
             if (bookId) {
                 checkBookStatus();
             }
-        }, [bookId]);
-    }
+        }
+    }, [bookId]);
+
 
     const handleRemoveFromList = async () => {
         if (onRemoveFromList) {
@@ -66,10 +68,18 @@ export default function BookCard({ bookId, title, role, onClick,
         }
     }
 
+    if (loading) {
+        return (
+            <div className="spinner-container">
+                <div className="spinner"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="book-card">
             <div className="book-card-header"
-                onClick={() => onClick(bookId)}>
+                 onClick={() => onClick(bookId)}>
                 <h2 className="book-title">{title}</h2>
             </div>
             {role === "ADMIN" && (

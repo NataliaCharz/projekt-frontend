@@ -51,9 +51,9 @@ export default function BookDetail() {
         fetchAuthor();
     }, [book]);
 
-    if (user.role === "USER") {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useEffect(() => {
+
+    useEffect(() => {
+        if (user.role === "USER") {
             const checkBookStatus = async () => {
                 try {
                     setLoading(true);
@@ -71,8 +71,9 @@ export default function BookDetail() {
             if (book) {
                 checkBookStatus();
             }
-        }, [book]);
-    }
+        }
+    }, [book]);
+
 
     const handleAddToList = async () => {
         try {
@@ -97,9 +98,9 @@ export default function BookDetail() {
     };
 
     if (!book) return (
-            <div className="spinner-container">
-                <div className="spinner"></div>
-            </div>);
+        <div className="spinner-container">
+            <div className="spinner"></div>
+        </div>);
 
     const handleClick = (authorId) => {
         router.push(`/authors/${authorId}`);
@@ -146,10 +147,10 @@ export default function BookDetail() {
                 )}
             </section>
             {user.role === "USER" && (
-            <section className="book-actions">
-                {!inList && <button onClick={handleAddToList}>Add to Your List</button>}
-                {!inWishlist && <button onClick={handleAddToWishlist}>Add to Wishlist</button>}
-            </section>)}
+                <section className="book-actions">
+                    {!inList && <button onClick={handleAddToList}>Add to Your List</button>}
+                    {!inWishlist && <button onClick={handleAddToWishlist}>Add to Wishlist</button>}
+                </section>)}
         </div>
 
     );
