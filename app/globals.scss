@@ -782,3 +782,48 @@ input {
     transform: rotate(360deg);
   }
 }
+
+.notifications {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 9999;
+}
+
+.notification {
+  background: linear-gradient(90deg, $panel-bg-start, $panel-bg-end); // gradient Twoich kolorów
+  color: $text-light;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  min-width: 250px;
+  max-width: 400px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideIn 0.3s ease-out;
+
+  button {
+    background: transparent;
+    border: none;
+    color: $text-light;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 1rem;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -4,6 +4,7 @@ import {AuthProvider, useAuth} from "./auth/AuthContext";
 import Link from "next/link";
 import RequireAuth from "./auth/RequireAuth";
 import { Toaster } from 'react-hot-toast';
+import {useEffect, useState} from "react";
 
 export default function RootLayout({children}) {
     return (
@@ -20,6 +21,27 @@ export default function RootLayout({children}) {
 
 function LayoutWrapper({children}) {
     const {user, loading} = useAuth();
+    const [notifications, setNotifications] = useState([]);
+
+    useEffect(() => {
+        if (!user) return;
+
+        const eventSource = new EventSource("https://localhost:8443/api/notifications", {
+            withCredentials: true,
+        });
+
+        eventSource.onmessage = (e) => {
+            setNotifications((prev) => [...prev, e.data]);
+        };
+
+        eventSource.onerror = () => eventSource.close();
+
+        return () => eventSource.close();
+    }, [user]);
+
+    const removeNotification = (index) => {
+        setNotifications((prev) => prev.filter((_, i) => i !== index));
+    };
 
     if (loading) return <p>Loading...</p>;
 
@@ -57,6 +79,16 @@ function LayoutWrapper({children}) {
                     </aside>
                     <main className="panel-content">{children}</main>
                 </div>
+                <div className="notifications">
+                    {notifications.map((msg, i) => (
+                        <div key={i} className="notification">
+                            {msg}
+                            <button className="close-btn" onClick={() => removeNotification(i)}>
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </RequireAuth>
         );
     }
@@ -78,6 +110,16 @@ function LayoutWrapper({children}) {
                     </nav>
                 </aside>
                 <main className="panel-content">{children}</main>
+                <div className="notifications">
+                    {notifications.map((msg, i) => (
+                        <div key={i} className="notification">
+                            {msg}
+                            <button className="close-btn" onClick={() => removeNotification(i)}>
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
         </RequireAuth>
     );

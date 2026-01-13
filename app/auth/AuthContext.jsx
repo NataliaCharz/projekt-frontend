@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import api from "../api/axios";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 const AuthContext = createContext();
@@ -13,17 +13,14 @@ export const AuthProvider = ({ children }) => {
     const router = useRouter();
 
     const fetchUser = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setLoading(false);
-            return;
-        }
         try {
             const res = await api.get("/auth/me");
             setUser(res.data);
         } catch (err) {
-            console.log("Invalid token or no user", err);
-            toast.error("You are not logged in.")
+            console.log("No user or invalid token", err);
+            toast.error("You are not logged in.");
+            router.push("/");
+            setUser(null);
         } finally {
             setLoading(false);
         }
@@ -37,12 +34,10 @@ export const AuthProvider = ({ children }) => {
         try {
             const res = await api.post("/auth/login", credentials);
             const userData = { username: res.data.username, role: res.data.role };
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("role", res.data.role);
             setUser(userData);
             if (res.data.role === "ADMIN") {
                 router.push("/admin");
-            } else if (res.data.role === "USER"){
+            } else if (res.data.role === "USER") {
                 router.push("/user");
             } else {
                 router.push("/");
@@ -53,14 +48,13 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-
     const register = async (credentials) => {
         try {
             const res = await api.post("/auth/register", credentials);
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("role", res.data.role);
-            setUser({ username: res.data.username, role: res.data.role });
-            toast.success("Registered.")
+            const userData = { username: res.data.username, role: res.data.role };
+            setUser(userData);
+            toast.success("Registered.");
+
             if (res.data.role === "ADMIN") {
                 router.push("/admin");
             } else {
@@ -72,10 +66,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem("token");
-        setUser(null);
-        router.push("/");
+    const logout = async () => {
+        try {
+            await api.post("/auth/logout");
+            setUser(null);
+            router.push("/");
+        } catch (err) {
+            console.error("Logout failed", err);
+            toast.error("Could not logout.");
+        }
     };
 
     return (
@@ -86,4 +85,5 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
 

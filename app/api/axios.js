@@ -2,15 +2,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const api = axios.create({
-    baseURL: "http://localhost:8090/api",
-});
-
-api.interceptors.request.use(config => {
-    const token = localStorage.getItem("token");
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+    baseURL: "https://localhost:8443/api",
+    withCredentials: true,
 });
 
 api.interceptors.response.use(
